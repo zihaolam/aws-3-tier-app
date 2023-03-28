@@ -57,7 +57,38 @@ resource "aws_security_group" "db_server_sg" {
     to_port         = 3306
     protocol        = "tcp"
     self            = true
-    security_groups = [aws_security_group.web_server_sg.id, aws_security_group.bastion_host_sg.id]
+    security_groups = [aws_security_group.web_server_sg.id]
+  }
+
+  ingress {
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
+    self      = true
+  }
+
+  ingress {
+    from_port       = 22
+    to_port         = 22
+    protocol        = "tcp"
+    security_groups = [aws_security_group.bastion_host_sg.id]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "db_manager_sg" {
+  vpc_id = aws_vpc.main_vpc.id
+  ingress {
+    from_port       = 0
+    to_port         = 0
+    protocol        = "-1"
+    security_groups = [aws_security_group.db_server_sg.id]
   }
 
   ingress {
@@ -150,10 +181,10 @@ resource "aws_security_group" "nat_gateway_instance_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   ingress {
-    from_port   = 8835
-    to_port     = 8835
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["10.0.0.0/16"]
   }
   egress {
     from_port   = 0
