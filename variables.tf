@@ -50,9 +50,9 @@ variable "dbservers_private_ip" {
   default = ["10.0.3.10", "10.0.4.10", "10.0.5.10"]
 }
 
-# variable "dbmanager_private_ip" {
-#   default = "10.0.3.10"
-# }
+variable "dbmanager_private_ip" {
+  default = "10.0.3.11"
+}
 
 variable "webservers_private_ip" {
   default = ["10.0.3.80", "10.0.4.80"]

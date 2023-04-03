@@ -53,8 +53,8 @@ resource "aws_security_group" "load_balancer_sg" {
 resource "aws_security_group" "db_server_sg" {
   vpc_id = aws_vpc.main_vpc.id
   ingress {
-    from_port       = 3306
-    to_port         = 3306
+    from_port       = 6033
+    to_port         = 6033
     protocol        = "tcp"
     self            = true
     security_groups = [aws_security_group.web_server_sg.id]

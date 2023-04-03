@@ -27,44 +27,38 @@ resource "aws_instance" "db_servers" {
   tags = {
     Name = "dbserver-${count.index + 1}"
   }
-  #   user_data = <<-EOL
-  #       #! /bin/bash
-  #       cd ~
-  #       wget https://dev.mysql.com/get/Downloads/MySQL-Cluster-7.6/mysql-cluster-community-data-node_7.6.6-1ubuntu18.04_amd64.deb
-  #       sudo apt update
-  #       sudo apt install libclass-methodmaker-perl
-  #       sudo dpkg -i mysql-cluster-community-data-node_7.6.6-1ubuntu18.04_amd64.deb
-  #       sudo touch /etc/my.cnf
-  #       echo '
-  #           [mysql_cluster]
-  #           # Options for NDB Cluster processes:
-  #           ndb-connectstring=${var.dbmanager_private_ip}  # location of cluster manager
-  #       ' | sudo tee -a '/etc/my.cnf' > /dev/null
-  #       sudo mkdir -p /usr/local/mysql/data
-  #       sudo ndbd
-  #       sudo pkill -f ndbd
-  #       sudo touch /etc/systemd/system/ndbd.service
+  depends_on = [
+    aws_instance.nat_gateway_instance
+  ]
+}
 
-  #       echo '
-  #           [Unit]
-  #           Description=MySQL NDB Data Node Daemon
-  #           After=network.target auditd.service
+resource "aws_instance" "db_load_balancer" {
+  ami             = var.ubuntu_ami
+  private_ip      = var.dbmanager_private_ip
+  subnet_id       = element(aws_subnet.private_subnet.*.id, 0)
+  instance_type   = "t3.medium"
+  key_name        = var.general_key_pair
+  security_groups = [aws_security_group.db_server_sg.id]
+  tags = {
+    Name = "db_load_balancer"
+  }
 
-  #           [Service]
-  #           Type=forking
-  #           ExecStart=/usr/sbin/ndbd
-  #           ExecReload=/bin/kill -HUP $MAINPID
-  #           KillMode=process
-  #           Restart=on-failure
+  user_data = <<-EOL
+    !# /bin/bash
+    sudo apt update
+    sudo apt install -y wget gnupg2 lsb-release curl
+    wget https://repo.percona.com/apt/percona-release_latest.generic_all.deb
+    sudo dpkg -i percona-release_latest.generic_all.deb
+    sudo apt update
+    sudo percona-release setup pxc80
+    sudo apt install -y percona-xtradb-cluster-client
+    sudo apt sudo apt install -y proxysql2
 
-  #           [Install]
-  #           WantedBy=multi-user.target
-  #       ' | sudo tee -a /etc/systemd/system/ndbd.service > /dev/null
-  #       sudo systemctl daemon-reload
-  #       sudo systemctl enable ndbd
-  #       sudo systemctl start ndbd
-  #       sudo systemctl status ndbd
-  #   EOL
+    EOL
+
+    depends_on = [
+      aws_instance.nat_gateway_instance
+    ]
 }
 
 # resource "aws_instance" "db_manager" {
