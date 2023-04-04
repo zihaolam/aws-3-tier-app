@@ -58,6 +58,10 @@ variable "webservers_private_ip" {
   default = ["10.0.3.80", "10.0.4.80"]
 }
 
+variable "appservers_private_ip" {
+  default = ["10.0.3.100", "10.0.4.100"]
+}
+
 variable "fileservers_private_ip" {
-  default = ["10.0.3.120", "10.0.4.120", "10.0.5.120"]
+  default = ["10.0.3.120", "10.0.4.120"]
 }

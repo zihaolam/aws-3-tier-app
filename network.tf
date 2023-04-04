@@ -43,15 +43,27 @@ resource "aws_eip" "bastion_host_eip" {
 }
 
 # Elastic-IP (eip) for Load Balancer Server
-resource "aws_eip" "load_balancer_eip" {
+resource "aws_eip" "app_load_balancer_eip" {
   vpc                  = true
   network_border_group = var.network_border_group
-  instance             = aws_instance.load_balancer.id
+  instance             = aws_instance.app_load_balancer.id
   depends_on = [
     aws_internet_gateway.ig
   ]
   tags = {
-    Name = "load-balancer-eip"
+    Name = "app-load-balancer-eip"
+  }
+}
+
+resource "aws_eip" "web_load_balancer_eip" {
+  vpc                  = true
+  network_border_group = var.network_border_group
+  instance             = aws_instance.web_load_balancer.id
+  depends_on = [
+    aws_internet_gateway.ig
+  ]
+  tags = {
+    Name = "web-load-balancer-eip"
   }
 }
 
