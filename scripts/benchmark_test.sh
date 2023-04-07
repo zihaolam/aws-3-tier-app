@@ -19,7 +19,7 @@ sysbench \
 --mysql-user=sbuser \
 --mysql-password=sbpass \
 --mysql-db=sbtest \
---mysql-host=10.0.3.11\
+--mysql-host=10.0.3.11 \
 --mysql-port=6033 \
 --table-size=10000 \
 --threads=4 \
