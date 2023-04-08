@@ -8,6 +8,7 @@ flask = "*"
 psutil = "*"
 flask-sqlalchemy = "*"
 gevent = "*"
+pymysql = "*"
 
 [dev-packages]
 

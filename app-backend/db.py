@@ -4,7 +4,7 @@ from sqlalchemy import text
 from app import app
 
 def setup(app: Flask):
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://sbuser:sbpass@10.0.3.11:6033/sbtest'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://sbuser:sbpass@10.0.3.11:6033/sbtest'
     return SQLAlchemy(app)
 
 
