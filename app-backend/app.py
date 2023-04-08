@@ -16,6 +16,4 @@ def health():
     }
 
 if __name__ == "__main__":
-    from gevent.pywsgi import WSGIServer
-    http_server = WSGIServer(('0.0.0.0', 8030), app)
-    http_server.serve_forever()
+    app.run(host='0.0.0.0', port=8030)
