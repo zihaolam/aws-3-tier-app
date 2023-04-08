@@ -9,6 +9,7 @@ psutil = "*"
 flask-sqlalchemy = "*"
 gevent = "*"
 pymysql = "*"
+flask-cors = "*"
 
 [dev-packages]
 
