@@ -10,10 +10,11 @@ def setup(app: Flask):
 
 db = setup(app)
 
-with app.app_context():
-    try:
-        # db.session.execute('SELECT 1')
-        db.session.execute(text('SELECT 1'))
-        print('\n\n----------- Connection successful !')
-    except Exception as e:
-        print('\n\n----------- Connection failed ! ERROR : ', e)
+if __name__ == "__main__":
+    with app.app_context():
+        try:
+            # db.session.execute('SELECT 1')
+            db.session.execute(text('SELECT 1'))
+            print('\n\n----------- Connection successful !')
+        except Exception as e:
+            print('\n\n----------- Connection failed ! ERROR : ', e)
