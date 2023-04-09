@@ -1,5 +1,7 @@
 #!/bin/bash
 
+${prepend_user_data}
+
 sudo apt-get update -y && \
 sudo apt-get install -y \
 ca-certificates \
@@ -27,4 +29,4 @@ mkdir ~/app && \
 git clone https://github.com/zihaolam/aws-3-tier-app.git ~/app && \
 docker-compose -f ~/app/app-healthcheck/docker-compose.yml up -d
 
-${additional_user_data}
+${append_user_data}

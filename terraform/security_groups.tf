@@ -170,13 +170,6 @@ resource "aws_security_group" "app_server_sg" {
   }
 
   ingress {
-    from_port = 8020
-    to_port   = 8020
-    protocol  = "tcp"
-    self      = true
-  }
-
-  ingress {
     from_port       = 22
     to_port         = 22
     protocol        = "tcp"

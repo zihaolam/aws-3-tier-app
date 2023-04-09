@@ -16,7 +16,7 @@ def get_ip():
         s.close()
     return IP
 
-ec2_resource = boto3.resource('ec2')
+ec2_resource = boto3.resource('ec2', region="ap-southeast-1")
 
 def get_node_name():
     res = requests.get("http://169.254.169.254/latest/meta-data/instance-id")

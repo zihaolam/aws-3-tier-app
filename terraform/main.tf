@@ -14,6 +14,16 @@ resource "aws_instance" "web_servers" {
   tags = {
     Name = "webserver-${count.index + 1}"
   }
+  depends_on = [
+    aws_instance.nat_gateway_instance
+  ]
+
+  user_data = base64encode(templatefile("./user_data/healthcheck_server.tftpl", {
+    prepend_user_data = "",
+    append_user_data  = <<-EOL
+    docker-compose -f ~/app/app-frontend/docker-compose.yml up -d
+    EOL
+  }))
 }
 
 resource "aws_instance" "db_servers" {
@@ -46,7 +56,8 @@ resource "aws_instance" "db_load_balancer" {
   }
 
   user_data = base64encode(templatefile("./user_data/healthcheck_server.tftpl", {
-    additional_user_data = base64encode(templatefile("./user_data/db_proxy.tfpl", {}))
+    prepend_user_data = "",
+    append_user_data  = base64encode(templatefile("./user_data/db_proxy.tfpl", {}))
   }))
 
   depends_on = [
@@ -66,8 +77,13 @@ resource "aws_instance" "app_server" {
     Name = "appserver-${count.index + 1}"
   }
 
+  depends_on = [
+    aws_instance.nat_gateway_instance
+  ]
+
   user_data = base64encode(templatefile("./user_data/healthcheck_server.tftpl", {
-    additional_user_data = <<-EOL
+    prepend_user_data = "",
+    append_user_data  = <<-EOL
     docker-compose -f ~/app/app-backend/docker-compose.yml up -d
     EOL
   }))
@@ -84,8 +100,10 @@ resource "aws_instance" "web_load_balancer" {
     Name = "web_load_balancer"
   }
 
+
   user_data = base64encode(templatefile("./user_data/healthcheck_server.tftpl", {
-    additional_user_data = base64encode(templatefile("./user_data/weblb.sh", {}))
+    prepend_user_data = "",
+    append_user_data  = base64encode(templatefile("./user_data/weblb.sh", {}))
   }))
 }
 
@@ -101,7 +119,8 @@ resource "aws_instance" "app_load_balancer" {
   }
 
   user_data = base64encode(templatefile("./user_data/healthcheck_server.tftpl", {
-    additional_user_data = base64encode(templatefile("./user_data/applb.sh", {}))
+    prepend_user_data = "",
+    append_user_data  = base64encode(templatefile("./user_data/applb.sh", {}))
   }))
 }
 
@@ -117,8 +136,13 @@ resource "aws_instance" "file_server" {
     Name = "fileserver-${count.index + 1}"
   }
 
+  depends_on = [
+    aws_instance.nat_gateway_instance
+  ]
+
   user_data = base64encode(templatefile("./user_data/healthcheck_server.tftpl", {
-    additional_user_data = base64encode(templatefile("./user_data/fileserver.sh", {}))
+    prepend_user_data = "",
+    append_user_data  = base64encode(templatefile("./user_data/fileserver.sh", {}))
   }))
 
   ebs_block_device {
@@ -138,7 +162,7 @@ resource "aws_instance" "bastion_host" {
     Name = "bastionhost-server"
   }
 
-  user_data = base64encode(templatefile("./user_data/healthcheck_server.tftpl", { additional_user_data = "" }))
+  user_data = base64encode(templatefile("./user_data/healthcheck_server.tftpl", { append_user_data = "", prepend_user_data = "" }))
 }
 
 # NAT
@@ -152,7 +176,8 @@ resource "aws_instance" "nat_gateway_instance" {
   source_dest_check = false
 
   user_data = base64encode(templatefile("./user_data/healthcheck_server.tftpl", {
-    additional_user_data = <<-EOL
+    append_user_data  = "",
+    prepend_user_data = <<-EOL
     #! /bin/bash
     sudo sysctl -q -w net.ipv4.ip_forward=1 net.ipv4.conf.ens5.send_redirects=0
     sudo iptables -t nat -C POSTROUTING -o ens5 -s 10.0.0.0/16 -j MASQUERADE 2> /dev/null
