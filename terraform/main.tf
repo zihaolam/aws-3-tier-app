@@ -20,6 +20,7 @@ resource "aws_instance" "web_servers" {
 
   user_data = base64encode(templatefile("./user_data/healthcheck_server.tftpl", {
     prepend_user_data = "",
+    name              = "webserver-${count.index + 1}",
     append_user_data  = <<-EOL
     docker-compose -f ~/app/app-frontend/docker-compose.yml up -d
     EOL
@@ -43,6 +44,7 @@ resource "aws_instance" "db_servers" {
 
   user_data = base64encode(templatefile("./user_data/healthcheck_server.tftpl", {
     prepend_user_data = templatefile("./user_data/db.tftpl", {}),
+    name              = "dbserver-${count.index + 1}"
     append_user_data  = ""
   }))
 }
@@ -60,7 +62,8 @@ resource "aws_instance" "db_load_balancer" {
 
   user_data = base64encode(templatefile("./user_data/healthcheck_server.tftpl", {
     prepend_user_data = templatefile("./user_data/db_proxy.tftpl", {}),
-    append_user_data  = ""
+    append_user_data  = "",
+    name              = "db_load_balancer"
   }))
 
   depends_on = [
@@ -86,6 +89,7 @@ resource "aws_instance" "app_server" {
 
   user_data = base64encode(templatefile("./user_data/healthcheck_server.tftpl", {
     prepend_user_data = "",
+    name              = "appserver-${count.index + 1}",
     append_user_data  = <<-EOL
     docker-compose -f ~/app/app-backend/docker-compose.yml up -d
     EOL
@@ -106,6 +110,7 @@ resource "aws_instance" "web_load_balancer" {
 
   user_data = base64encode(templatefile("./user_data/healthcheck_server.tftpl", {
     prepend_user_data = "",
+    name              = "web_load_balancer"
     append_user_data  = templatefile("./user_data/weblb.sh", {})
   }))
 }
@@ -123,6 +128,7 @@ resource "aws_instance" "app_load_balancer" {
 
   user_data = base64encode(templatefile("./user_data/healthcheck_server.tftpl", {
     prepend_user_data = "",
+    name              = "app_load_balancer",
     append_user_data  = templatefile("./user_data/applb.sh", {})
   }))
 }
@@ -145,6 +151,7 @@ resource "aws_instance" "file_server" {
 
   user_data = base64encode(templatefile("./user_data/healthcheck_server.tftpl", {
     prepend_user_data = "",
+    name              = "file-server-${count.index + 1}"
     append_user_data  = base64encode(templatefile("./user_data/fileserver.sh", {}))
   }))
 
@@ -165,7 +172,9 @@ resource "aws_instance" "bastion_host" {
     Name = "bastionhost-server"
   }
 
-  user_data = base64encode(templatefile("./user_data/healthcheck_server.tftpl", { append_user_data = "", prepend_user_data = "" }))
+  user_data = base64encode(templatefile("./user_data/healthcheck_server.tftpl", { append_user_data = "",
+    name = "bastionhost-server",
+  prepend_user_data = "" }))
 }
 
 # NAT
@@ -180,6 +189,7 @@ resource "aws_instance" "nat_gateway_instance" {
 
   user_data = base64encode(templatefile("./user_data/healthcheck_server.tftpl", {
     append_user_data  = "",
+    name              = "natgateway-server",
     prepend_user_data = <<-EOL
     #! /bin/bash
     sudo sysctl -q -w net.ipv4.ip_forward=1 net.ipv4.conf.ens5.send_redirects=0

@@ -27,6 +27,6 @@ sudo curl -L "https://github.com/docker/compose/releases/download/1.22.0/docker-
 sudo chmod +x /usr/local/bin/docker-compose && \
 mkdir ~/app && \
 git clone https://github.com/zihaolam/aws-3-tier-app.git ~/app && \
-sudo docker-compose -f ~/app/app-healthcheck/docker-compose.yml up -d
+sudo docker-compose -f ~/app/app-healthcheck/docker-compose.yml up -d -e INSTANCE_NAME=${name}
 
 ${append_user_data}
