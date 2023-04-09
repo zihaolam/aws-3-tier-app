@@ -1,7 +1,9 @@
 # docker-compose.yml
-version: '3.7'
+version: "3.7"
 services:
-  app-backend:
-    container_name: app-backend
-    build: .
-    network_mode: "host"
+    app-backend:
+        container_name: app-healthcheck
+        build: .
+        network_mode: "host"
+        environment:
+            - INSTANCE_NAME=${INSTANCE_NAME}

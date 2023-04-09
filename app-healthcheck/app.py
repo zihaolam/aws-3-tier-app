@@ -1,6 +1,7 @@
 from flask import Flask
-from utils import get_ip, get_utilization, get_node_name
+from utils import get_ip, get_utilization
 from flask_cors import CORS
+import os
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -12,7 +13,7 @@ def ping():
 @app.route("/health", methods=["GET"])
 def health():
     return {
-        "node_name": get_node_name(),
+        "node_name": os.environ.get("INSTANCE_NAME"),
         "private_ip":get_ip(),
         "utilization": get_utilization()
     }
