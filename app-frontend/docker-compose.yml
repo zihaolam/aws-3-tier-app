@@ -5,3 +5,5 @@ services:
         container_name: app-frontend
         build: .
         network_mode: "host"
+        ports:
+            - "80:3000"

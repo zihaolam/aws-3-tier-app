@@ -37,4 +37,4 @@ listen appname
     server app2 10.0.4.80:3000 check
 " | sudo tee /etc/haproxy/haproxy.cfg > /dev/null
 
-sudo service haproxy start
+sudo systemctl restart haproxy
