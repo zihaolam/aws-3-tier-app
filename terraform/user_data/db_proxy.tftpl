@@ -20,7 +20,7 @@ WHERE variable_name='mysql-monitor_username';
 UPDATE global_variables SET variable_value='ProxySQLPa55'
 WHERE variable_name='mysql-monitor_password';
 
-INSERT INTO mysql_userss (username,password) VALUES ('sbuser','sbpass');
+INSERT INTO mysql_users (username,password) VALUES ('sbuser','sbpass');
 
 LOAD MYSQL SERVERS TO RUNTIME;
 LOAD MYSQL QUERY RULES TO RUNTIME;

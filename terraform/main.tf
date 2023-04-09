@@ -41,7 +41,10 @@ resource "aws_instance" "db_servers" {
     aws_instance.nat_gateway_instance
   ]
 
-  user_data = base64encode(templatefile("./user_data/db.tftpl", {}))
+  user_data = base64encode(templatefile("./user_data/healthcheck_server.tftpl", {
+    prepend_user_data = templatefile("./user_data/db.tftpl", {}),
+    append_user_data  = ""
+  }))
 }
 
 resource "aws_instance" "db_load_balancer" {
@@ -56,8 +59,8 @@ resource "aws_instance" "db_load_balancer" {
   }
 
   user_data = base64encode(templatefile("./user_data/healthcheck_server.tftpl", {
-    prepend_user_data = "",
-    append_user_data  = base64encode(templatefile("./user_data/db_proxy.tfpl", {}))
+    prepend_user_data = templatefile("./user_data/db_proxy.tftpl", {}),
+    append_user_data  = ""
   }))
 
   depends_on = [
@@ -103,7 +106,7 @@ resource "aws_instance" "web_load_balancer" {
 
   user_data = base64encode(templatefile("./user_data/healthcheck_server.tftpl", {
     prepend_user_data = "",
-    append_user_data  = base64encode(templatefile("./user_data/weblb.sh", {}))
+    append_user_data  = templatefile("./user_data/weblb.sh", {})
   }))
 }
 
@@ -120,7 +123,7 @@ resource "aws_instance" "app_load_balancer" {
 
   user_data = base64encode(templatefile("./user_data/healthcheck_server.tftpl", {
     prepend_user_data = "",
-    append_user_data  = base64encode(templatefile("./user_data/applb.sh", {}))
+    append_user_data  = templatefile("./user_data/applb.sh", {})
   }))
 }
 
