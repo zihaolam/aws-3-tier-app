@@ -43,7 +43,7 @@ async def async_fetch(url):
                 print('Connection Error', str(e))
                 return "Unreachable"
         
-loop = asyncio.get_event_loop()
+loop = asyncio.new_event_loop()
 
 def get_all_nodes_health():
     node_ips = ["10.0.3.10", "10.0.4.10", "10.0.5.10", "10.0.3.11", "10.0.3.80", "10.0.4.80", "10.0.1.11", "10.0.1.10", "10.0.3.100", "10.0.4.100", "10.0.3.120", "10.0.4.120", "10.0.1.45", "10.0.1.46"]

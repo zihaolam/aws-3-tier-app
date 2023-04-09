@@ -24,4 +24,4 @@ sudo curl -L "https://github.com/docker/compose/releases/download/1.22.0/docker-
 sudo chmod +x /usr/local/bin/docker-compose && \
 mkdir ~/app && \
 git clone https://github.com/zihaolam/aws-3-tier-app.git ~/app && \
-docker-compose -f ~/app/app-backend/docker-compose.yml -up -d
+docker-compose -f ~/app/app-backend/docker-compose.yml up -d
