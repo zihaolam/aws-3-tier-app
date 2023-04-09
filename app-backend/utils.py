@@ -37,7 +37,11 @@ async def fetch_health(url: str, session: ClientSession, **kwargs) -> tuple:
 async def async_fetch(url):
     async with aiohttp.ClientSession() as session, async_timeout.timeout(10):
         async with session.get(url) as response:
-            return await response.text()
+            try:
+                return await response.text()
+            except aiohttp.ClientConnectorError as e:
+                print('Connection Error', str(e))
+                return "Unreachable"
         
 loop = asyncio.get_event_loop()
 
