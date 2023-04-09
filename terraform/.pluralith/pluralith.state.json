@@ -8326,35 +8326,7 @@
    "attribute": [
     "id"
    ],
-   "resource": "aws_security_group.web_load_balancer_sg"
-  },
-  {
-   "attribute": [
-    "id"
-   ],
-   "resource": "aws_instance.app_load_balancer"
-  },
-  {
-   "attribute": [],
-   "resource": "aws_subnet.private_subnet"
-  },
-  {
-   "attribute": [
-    "id"
-   ],
-   "resource": "aws_security_group.file_server_sg"
-  },
-  {
-   "attribute": [
-    "id"
-   ],
-   "resource": "aws_security_group.db_server_sg"
-  },
-  {
-   "attribute": [
-    "id"
-   ],
-   "resource": "aws_security_group.bastion_host_sg"
+   "resource": "aws_vpc.main_vpc"
   },
   {
    "attribute": [
@@ -8363,10 +8335,8 @@
    "resource": "aws_security_group.nat_gateway_instance_sg"
   },
   {
-   "attribute": [
-    "id"
-   ],
-   "resource": "aws_security_group.app_server_sg"
+   "attribute": [],
+   "resource": "aws_subnet.private_subnet"
   },
   {
    "attribute": [],
@@ -8376,31 +8346,13 @@
    "attribute": [
     "id"
    ],
-   "resource": "aws_instance.bastion_host"
-  },
-  {
-   "attribute": [
-    "primary_network_interface_id"
-   ],
    "resource": "aws_instance.nat_gateway_instance"
   },
   {
    "attribute": [
     "id"
    ],
-   "resource": "aws_route_table.private"
-  },
-  {
-   "attribute": [
-    "id"
-   ],
-   "resource": "aws_vpc.main_vpc"
-  },
-  {
-   "attribute": [
-    "id"
-   ],
-   "resource": "aws_security_group.web_server_sg"
+   "resource": "aws_instance.app_load_balancer"
   },
   {
    "attribute": [
@@ -8412,7 +8364,7 @@
    "attribute": [
     "id"
    ],
-   "resource": "aws_instance.web_load_balancer"
+   "resource": "aws_security_group.file_server_sg"
   },
   {
    "attribute": [
@@ -8424,7 +8376,55 @@
    "attribute": [
     "id"
    ],
+   "resource": "aws_security_group.web_server_sg"
+  },
+  {
+   "attribute": [
+    "id"
+   ],
+   "resource": "aws_security_group.bastion_host_sg"
+  },
+  {
+   "attribute": [
+    "id"
+   ],
+   "resource": "aws_route_table.private"
+  },
+  {
+   "attribute": [
+    "id"
+   ],
+   "resource": "aws_security_group.db_server_sg"
+  },
+  {
+   "attribute": [
+    "id"
+   ],
+   "resource": "aws_security_group.app_server_sg"
+  },
+  {
+   "attribute": [
+    "id"
+   ],
+   "resource": "aws_instance.bastion_host"
+  },
+  {
+   "attribute": [
+    "id"
+   ],
+   "resource": "aws_security_group.web_load_balancer_sg"
+  },
+  {
+   "attribute": [
+    "primary_network_interface_id"
+   ],
    "resource": "aws_instance.nat_gateway_instance"
+  },
+  {
+   "attribute": [
+    "id"
+   ],
+   "resource": "aws_instance.web_load_balancer"
   }
  ],
  "resource_changes": [
