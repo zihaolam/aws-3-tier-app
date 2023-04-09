@@ -1,4 +1,14 @@
-INSERT INTO mysql_servers(hostgroup_id, hostname, port) VALUES (0,'10.0.3.10',3306);
+#!/bin/bash
+
+sudo apt update -y && \
+sudo apt install -y wget gnupg2 lsb-release curl && \
+wget https://repo.percona.com/apt/percona-release_latest.generic_all.deb && \
+sudo dpkg -i percona-release_latest.generic_all.deb && \
+sudo apt update && \
+sudo percona-release setup pxc80 && \
+sudo apt install -y percona-xtradb-cluster-client && \
+sudo apt install -y proxysql2 && \
+mysql -h127.0.0.1 -uadmin -padmin -P6032 -Bse "INSERT INTO mysql_servers(hostgroup_id, hostname, port) VALUES (0,'10.0.3.10',3306);
 INSERT INTO mysql_servers(hostgroup_id, hostname, port) VALUES (1,'10.0.4.10',3306);
 INSERT INTO mysql_servers(hostgroup_id, hostname, port) VALUES (2,'10.0.5.10',3306);
 
@@ -10,7 +20,7 @@ WHERE variable_name='mysql-monitor_username';
 UPDATE global_variables SET variable_value='ProxySQLPa55'
 WHERE variable_name='mysql-monitor_password';
 
-INSERT INTO mysql_users (username,password) VALUES ('sbuser','sbpass');
+INSERT INTO mysql_userss (username,password) VALUES ('sbuser','sbpass');
 
 LOAD MYSQL SERVERS TO RUNTIME;
 LOAD MYSQL QUERY RULES TO RUNTIME;
@@ -23,4 +33,4 @@ SAVE MYSQL USERS TO DISK;
 
 SELECT * FROM monitor.mysql_server_connect_log ORDER BY time_start_us DESC LIMIT 6;
 
-SELECT * FROM monitor.mysql_server_ping_log ORDER BY time_start_us DESC LIMIT 6;
+SELECT * FROM monitor.mysql_server_ping_log ORDER BY time_start_us DESC LIMIT 6;"

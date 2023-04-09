@@ -14,31 +14,6 @@ resource "aws_instance" "web_servers" {
   tags = {
     Name = "webserver-${count.index + 1}"
   }
-
-  user_data =<<-EOL
-    #!/bin/bash
-
-    sudo apt-get update -y && \
-    sudo apt-get install -y \
-        ca-certificates \
-        curl \
-        gnupg && \
-    sudo mkdir -m 0755 -p /etc/apt/keyrings && \
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg && \
-    echo \
-    "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-    "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
-    sudo tee /etc/apt/sources.list.d/docker.list > /dev/null && \
-    sudo apt-get update -y && \
-    sudo chmod a+r /etc/apt/keyrings/docker.gpg && \
-    sudo apt-get -y update && \
-    sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin && \
-    sudo groupadd docker && \
-    sudo usermod -aG docker $USER && \
-    newgrp docker && \
-    sudo systemctl restart docker && \
-    sudo chmod 666 /var/run/docker.sock
-  EOL
 }
 
 resource "aws_instance" "db_servers" {
@@ -55,6 +30,8 @@ resource "aws_instance" "db_servers" {
   depends_on = [
     aws_instance.nat_gateway_instance
   ]
+
+  user_data = base64encode(templatefile("./user_data/db.tftpl", {}))
 }
 
 resource "aws_instance" "db_load_balancer" {
@@ -63,23 +40,14 @@ resource "aws_instance" "db_load_balancer" {
   subnet_id       = element(aws_subnet.private_subnet.*.id, 0)
   instance_type   = "t3.medium"
   key_name        = var.general_key_pair
-  security_groups = [aws_security_group.db_server_sg.id]
+  security_groups = [aws_security_group.db_load_balancer_sg.id]
   tags = {
     Name = "db_load_balancer"
   }
 
-  user_data = <<-EOL
-    !# /bin/bash
-    sudo apt update
-    sudo apt install -y wget gnupg2 lsb-release curl
-    wget https://repo.percona.com/apt/percona-release_latest.generic_all.deb
-    sudo dpkg -i percona-release_latest.generic_all.deb
-    sudo apt update
-    sudo percona-release setup pxc80
-    sudo apt install -y percona-xtradb-cluster-client
-    sudo apt sudo apt install -y proxysql2
-
-    EOL
+  user_data = base64encode(templatefile("./user_data/healthcheck_server.tftpl", {
+    additional_user_data = base64encode(templatefile("./user_data/db_proxy.tfpl", {}))
+  }))
 
   depends_on = [
     aws_instance.nat_gateway_instance
@@ -98,41 +66,27 @@ resource "aws_instance" "app_server" {
     Name = "appserver-${count.index + 1}"
   }
 
-  user_data =<<-EOL
-    #!/bin/bash
-    
-    sudo apt-get update -y && \
-    sudo apt-get install -y \
-        ca-certificates \
-        curl \
-        gnupg && \
-    sudo mkdir -m 0755 -p /etc/apt/keyrings && \
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg && \
-    echo \
-    "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-    "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
-    sudo tee /etc/apt/sources.list.d/docker.list > /dev/null && \
-    sudo apt-get update -y && \
-    sudo chmod a+r /etc/apt/keyrings/docker.gpg && \
-    sudo apt-get -y update && \
-    sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin && \
-    sudo groupadd docker && \
-    sudo usermod -aG docker $USER && \
-    newgrp docker && \
-    sudo systemctl restart docker && \
-    sudo chmod 666 /var/run/docker.sock
-  EOL
+  user_data = base64encode(templatefile("./user_data/healthcheck_server.tftpl", {
+    additional_user_data = <<-EOL
+    docker-compose -f ~/app/app-backend/docker-compose.yml up -d
+    EOL
+  }))
 }
 
 resource "aws_instance" "web_load_balancer" {
   ami             = var.ubuntu_ami
   subnet_id       = element(aws_subnet.public_subnet.*.id, 0)
   instance_type   = "t3.medium"
+  private_ip      = var.webserverlb_private_ip
   key_name        = var.general_key_pair
   security_groups = [aws_security_group.web_load_balancer_sg.id]
   tags = {
     Name = "web_load_balancer"
   }
+
+  user_data = base64encode(templatefile("./user_data/healthcheck_server.tftpl", {
+    additional_user_data = base64encode(templatefile("./user_data/weblb.sh", {}))
+  }))
 }
 
 resource "aws_instance" "app_load_balancer" {
@@ -140,10 +94,15 @@ resource "aws_instance" "app_load_balancer" {
   subnet_id       = element(aws_subnet.public_subnet.*.id, 0)
   instance_type   = "t3.medium"
   key_name        = var.general_key_pair
+  private_ip      = var.appserverlb_private_ip
   security_groups = [aws_security_group.app_load_balancer_sg.id]
   tags = {
     Name = "app_load_balancer"
   }
+
+  user_data = base64encode(templatefile("./user_data/healthcheck_server.tftpl", {
+    additional_user_data = base64encode(templatefile("./user_data/applb.sh", {}))
+  }))
 }
 
 resource "aws_instance" "file_server" {
@@ -157,6 +116,11 @@ resource "aws_instance" "file_server" {
   tags = {
     Name = "fileserver-${count.index + 1}"
   }
+
+  user_data = base64encode(templatefile("./user_data/healthcheck_server.tftpl", {
+    additional_user_data = base64encode(templatefile("./user_data/fileserver.sh", {}))
+  }))
+
   ebs_block_device {
     device_name = "/dev/sdf"
     volume_size = 500
@@ -169,9 +133,12 @@ resource "aws_instance" "bastion_host" {
   instance_type   = "t3.medium"
   key_name        = var.general_key_pair
   security_groups = [aws_security_group.bastion_host_sg.id]
+  private_ip      = var.bastionhost_private_ip
   tags = {
     Name = "bastionhost-server"
   }
+
+  user_data = base64encode(templatefile("./user_data/healthcheck_server.tftpl", { additional_user_data = "" }))
 }
 
 # NAT
@@ -179,15 +146,19 @@ resource "aws_instance" "nat_gateway_instance" {
   subnet_id         = element(aws_subnet.public_subnet.*.id, 0)
   ami               = var.ubuntu_ami
   key_name          = var.general_key_pair
+  private_ip        = var.natgateway_private_ip
   instance_type     = "t3.medium"
   security_groups   = [aws_security_group.nat_gateway_instance_sg.id]
   source_dest_check = false
-  user_data         = <<-EOL
+
+  user_data = base64encode(templatefile("./user_data/healthcheck_server.tftpl", {
+    additional_user_data = <<-EOL
     #! /bin/bash
     sudo sysctl -q -w net.ipv4.ip_forward=1 net.ipv4.conf.ens5.send_redirects=0
     sudo iptables -t nat -C POSTROUTING -o ens5 -s 10.0.0.0/16 -j MASQUERADE 2> /dev/null
     sudo iptables -t nat -A POSTROUTING -o ens5 -s 10.0.0.0/16 -j MASQUERADE
   EOL
+  }))
 
   tags = {
     Name = "natgateway-server"

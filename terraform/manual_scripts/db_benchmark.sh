@@ -1,5 +1,6 @@
 #! /bin/bash
 
+sudo apt install -y sysbench && \
 sysbench \
 --mysql-user=sbuser \
 --mysql-password=sbpass \

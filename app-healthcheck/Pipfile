@@ -10,8 +10,8 @@ flask-sqlalchemy = "*"
 gevent = "*"
 pymysql = "*"
 flask-cors = "*"
-aiohttp = "*"
 requests = "*"
+boto3 = "*"
 
 [dev-packages]
 
