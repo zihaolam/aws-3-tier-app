@@ -5,5 +5,5 @@ export const meta: V2_MetaFunction = () => {
 };
 
 export default function Index() {
-	return <div className="flex flex-col"></div>;
+	return <div className="flex bg-gray-500"></div>;
 }

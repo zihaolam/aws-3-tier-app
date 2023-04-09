@@ -2,7 +2,7 @@ import type { LinksFunction } from "@remix-run/node";
 import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration } from "@remix-run/react";
 import stylesheet from "~/tailwind.css";
 import { QueryClient, QueryClientProvider } from "react-query";
-import Navbar from "./shared-widgets/Navbar";
+import { Navbar, BreadCrumbs } from "./shared-widgets";
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: stylesheet }];
 
@@ -20,7 +20,8 @@ export default function App() {
 				<QueryClientProvider client={queryClient}>
 					<div className="flex flex-col">
 						<Navbar />
-						<div className="mt-4">
+						<BreadCrumbs />
+						<div className="mt-8">
 							<Outlet />
 						</div>
 					</div>
