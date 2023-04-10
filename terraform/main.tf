@@ -21,9 +21,7 @@ resource "aws_instance" "web_servers" {
   user_data = base64encode(templatefile("./user_data/healthcheck_server.tftpl", {
     prepend_user_data = "",
     name              = "webserver-${count.index + 1}",
-    append_user_data  = <<-EOL
-    docker-compose -f ~/app/app-frontend/docker-compose.yml up -d
-    EOL
+    append_user_data  = "INSTANCE_NAME='webserver-${count.index + 1}' PRIVATE_IP=${element(var.webservers_private_ip, count.index)} docker-compose -f ~/app/app-frontend/docker-compose.yml up -d"
   }))
 }
 

@@ -6,3 +6,6 @@ services:
         build: .
         ports:
             - "80:3000"
+        environment:
+            - INSTANCE_NAME=${INSTANCE_NAME}
+            - PRIVATE_IP=${PRIVATE_IP}

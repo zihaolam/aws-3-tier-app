@@ -13,7 +13,7 @@ const serverTypeMapping: { [nodeGroup in NodeGroup]: string } = {
 };
 
 const NodeDetails: FC<{ nodeStat: NodeStat }> = ({ nodeStat }) => (
-    <div className="flex flex-col px-2 py-1 bg-gray-100 border border-gray-200 border-opacity-30 rounded w-56 relative">
+    <div className="flex flex-col px-2 py-1 bg-gray-100 border border-gray-200 border-opacity-30 w-56 rounded relative">
         <span className="font-medium mb-1 capitalize flex text-sm items-center gap-x-1">
             <SiAmazonec2 className="text-primary" />
             {nodeStat.node_name}
