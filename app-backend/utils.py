@@ -40,13 +40,13 @@ node_mapping = {}
 
 
 async def async_fetch(url):
-    async with aiohttp.ClientSession() as session, async_timeout.timeout(10):
+    async with aiohttp.ClientSession() as session, async_timeout.timeout(2):
         try:
             async with session.get(url) as response:
                 json_response = await response.json()
                 node_mapping[url] = json_response
                 return json_response
-        except aiohttp.ClientConnectorError as e:
+        except (aiohttp.ClientConnectorError, asyncio.exceptions.TimeoutError) as e:
             logging.error("Key Error: ", e)
             try:
                 return {
