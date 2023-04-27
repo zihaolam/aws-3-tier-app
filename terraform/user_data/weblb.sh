@@ -33,8 +33,8 @@ listen appname
     balance roundrobin
     option httpclose
     option forwardfor
-    server app1 10.0.3.80:3000 check
-    server app2 10.0.4.80:3000 check
+    server app1 10.0.3.80:80 check
+    server app2 10.0.4.80:80 check
 " | sudo tee /etc/haproxy/haproxy.cfg > /dev/null
 
 sudo systemctl restart haproxy

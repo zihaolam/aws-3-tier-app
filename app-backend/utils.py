@@ -1,4 +1,5 @@
 import logging
+import os
 import psutil
 import socket
 import asyncio
@@ -35,23 +36,27 @@ async def fetch_health(url: str, session: ClientSession, **kwargs) -> tuple:
     return (url, resp.status)
 
 
-node_last_health = {}
+node_mapping = {}
 
 
 async def async_fetch(url):
     async with aiohttp.ClientSession() as session, async_timeout.timeout(10):
         try:
             async with session.get(url) as response:
-                json_response = response.json()
-                node_last_health[url] = json_response
-                return await response.json()
+                json_response = await response.json()
+                node_mapping[url] = json_response
+                return json_response
         except aiohttp.ClientConnectorError as e:
-            logging.info('Connection Error', str(e))
-            try:
-                return node_last_health[url]
-            except KeyError as e:
-                logging.error("Key Error: ", e)
-                return None
+            logging.error("Key Error: ", e)
+            node_mapping[url][""]
+            return {
+                **node_mapping[url],
+                "utilization": {
+                    "cpu": -1,
+                    "memory": -1,
+                }
+            }
+
         
 loop = asyncio.get_event_loop()
 
