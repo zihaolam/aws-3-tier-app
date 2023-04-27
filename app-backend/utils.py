@@ -46,11 +46,11 @@ async def async_fetch(url):
                 json_response = await response.json()
                 node_mapping[url] = json_response
                 return json_response
-        except (aiohttp.ClientConnectorError, asyncio.exceptions.TimeoutError) as e:
-            logging.error("Key Error: ", e)
+        except Exception as e:
+            logging.error(e)
             try:
                 return {
-                    **node_mapping[url],
+                    "node_name": "fileserver-1",
                     "utilization": {
                         "cpu": -1,
                         "memory": -1,
