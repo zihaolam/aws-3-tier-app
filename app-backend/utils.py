@@ -40,24 +40,21 @@ node_mapping = {}
 
 
 async def async_fetch(url):
-    async with aiohttp.ClientSession() as session, async_timeout.timeout(2):
-        try:
+    try:
+        async with aiohttp.ClientSession() as session, async_timeout.timeout(2):
             async with session.get(url) as response:
                 json_response = await response.json()
                 node_mapping[url] = json_response
                 return json_response
-        except Exception as e:
-            logging.error(e)
-            try:
-                return {
-                    "node_name": "fileserver-1",
-                    "utilization": {
-                        "cpu": -1,
-                        "memory": -1,
-                    }
-                }
-            except Exception as e:
-                logging.error(e)
+    except Exception as e:
+        logging.error(e)
+        return {
+            "node_name": "fileserver-1",
+            "utilization": {
+                "cpu": -1,
+                "memory": -1,
+            }
+        }
 
         
 loop = asyncio.get_event_loop()
