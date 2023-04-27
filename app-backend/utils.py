@@ -48,14 +48,16 @@ async def async_fetch(url):
                 return json_response
         except aiohttp.ClientConnectorError as e:
             logging.error("Key Error: ", e)
-            node_mapping[url][""]
-            return {
-                **node_mapping[url],
-                "utilization": {
-                    "cpu": -1,
-                    "memory": -1,
+            try:
+                return {
+                    **node_mapping[url],
+                    "utilization": {
+                        "cpu": -1,
+                        "memory": -1,
+                    }
                 }
-            }
+            except Exception as e:
+                logging.error(e)
 
         
 loop = asyncio.get_event_loop()
