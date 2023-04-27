@@ -44,12 +44,13 @@ async def async_fetch(url):
         async with aiohttp.ClientSession() as session, async_timeout.timeout(2):
             async with session.get(url) as response:
                 json_response = await response.json()
-                node_mapping[url] = json_response
+                node_mapping[url] = json_response["node_name"]
                 return json_response
+    
     except Exception as e:
         logging.error(e)
         return {
-            "node_name": "fileserver-1",
+            "node_name": node_mapping[url],
             "utilization": {
                 "cpu": -1,
                 "memory": -1,
