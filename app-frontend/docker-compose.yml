@@ -9,3 +9,4 @@ services:
         environment:
             - INSTANCE_NAME=${INSTANCE_NAME}
             - PRIVATE_IP=${PRIVATE_IP}
+        restart: always

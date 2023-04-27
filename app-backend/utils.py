@@ -34,14 +34,23 @@ async def fetch_health(url: str, session: ClientSession, **kwargs) -> tuple:
     return (url, resp.status)
 
 
+node_last_health = {}
+
+
 async def async_fetch(url):
     async with aiohttp.ClientSession() as session, async_timeout.timeout(10):
-        async with session.get(url) as response:
-            try:
+        try:
+            async with session.get(url) as response:
+                json_response = response.json()
+                node_last_health[url] = json_response
                 return await response.json()
-            except aiohttp.ClientConnectorError as e:
-                print('Connection Error', str(e))
-                return "Unreachable"
+        except aiohttp.ClientConnectorError as e:
+            print('Connection Error', str(e))
+            try:
+                return node_last_health[url]
+            except KeyError as e:
+                print(e)
+                return None
         
 loop = asyncio.get_event_loop()
 

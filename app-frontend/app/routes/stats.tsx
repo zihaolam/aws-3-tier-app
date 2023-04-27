@@ -66,8 +66,6 @@ const StatsRoute: FC = () => {
     );
     const groupedNoteStats = useMemoizedGroupedNoteStats(data);
 
-    console.log(groupedNoteStats);
-
     return (
         <>
             <div className="flex gap-x-2 items-center text-sm mx-8 px-2 mb-3 pb-2 font-medium">

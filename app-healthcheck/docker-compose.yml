@@ -7,3 +7,4 @@ services:
         network_mode: "host"
         environment:
             - INSTANCE_NAME=${INSTANCE_NAME}
+        restart: always
