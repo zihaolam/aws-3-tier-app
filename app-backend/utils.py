@@ -1,3 +1,4 @@
+import logging
 import psutil
 import socket
 import asyncio
@@ -45,11 +46,11 @@ async def async_fetch(url):
                 node_last_health[url] = json_response
                 return await response.json()
         except aiohttp.ClientConnectorError as e:
-            print('Connection Error', str(e))
+            logging.info('Connection Error', str(e))
             try:
                 return node_last_health[url]
             except KeyError as e:
-                print(e)
+                logging.error("Key Error: ", e)
                 return None
         
 loop = asyncio.get_event_loop()

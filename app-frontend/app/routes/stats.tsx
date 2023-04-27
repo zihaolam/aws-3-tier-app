@@ -58,7 +58,7 @@ const StatsRoute: FC = () => {
         ["node-health"],
         () =>
             axios
-                .get<NodeStat[]>("http://15.220.241.217/all-health")
+                .get<NodeStat[]>("http://15.220.241.166/all-health")
                 .then((res) => res.data),
         {
             refetchInterval: 1000,
