@@ -150,7 +150,7 @@ resource "aws_instance" "file_server" {
   user_data = base64encode(templatefile("./user_data/healthcheck_server.tftpl", {
     prepend_user_data = "",
     name              = "file-server-${count.index + 1}"
-    append_user_data  = base64encode(templatefile("./user_data/fileserver.sh", {}))
+    append_user_data  = templatefile("./user_data/fileserver.sh", {})
   }))
 
   ebs_block_device {

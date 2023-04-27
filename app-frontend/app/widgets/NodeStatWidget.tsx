@@ -22,32 +22,30 @@ const NodeDetails: FC<{ nodeStat: NodeStat }> = ({ nodeStat }) => (
             <span className="col-span-3">- CPU Utilization: </span>
             <span
                 className={`font-medium ${
-                    nodeStat.utilization.cpu < 80 ||
-                    nodeStat.utilization.cpu !== -1
-                        ? "text-green-600"
-                        : "text-red-600"
+                    nodeStat.utilization.cpu > 80 ||
+                    nodeStat.utilization.cpu === -1
+                        ? "text-red-600"
+                        : "text-green-600"
                 }`}
             >
                 {nodeStat.utilization.cpu !== -1
-                    ? nodeStat.utilization.cpu
+                    ? nodeStat.utilization.cpu.toFixed(2) + "%"
                     : "Dead"}
-                %
             </span>
         </span>
         <span className="text-xs grid grid-cols-4 ml-1">
             <span className="col-span-3">- Memory Utilization: </span>
             <span
                 className={`font-medium ${
-                    nodeStat.utilization.memory < 80 ||
-                    nodeStat.utilization.cpu !== -1
-                        ? "text-green-600"
-                        : "text-red-600"
+                    nodeStat.utilization.cpu > 80 ||
+                    nodeStat.utilization.cpu === -1
+                        ? "text-red-600"
+                        : "text-green-600"
                 }`}
             >
                 {nodeStat.utilization.cpu !== -1
-                    ? nodeStat.utilization.memory.toFixed(2)
+                    ? nodeStat.utilization.memory.toFixed(2) + "%"
                     : "Dead"}
-                %
             </span>
         </span>
         <span className="text-xxs mt-5 text-gray-500 font-medium mb-1">
