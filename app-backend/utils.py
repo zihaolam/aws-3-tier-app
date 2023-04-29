@@ -39,19 +39,18 @@ async def fetch_health(url: str, session: ClientSession, **kwargs) -> tuple:
 node_mapping = {}
 
 
-async def async_fetch(url, ip):
+async def async_fetch(url):
     try:
         async with aiohttp.ClientSession() as session, async_timeout.timeout(2):
             async with session.get(url) as response:
                 json_response = await response.json()
-                node_mapping[url] = [json_response["node_name"], ip]
+                node_mapping[url] = json_response["node_name"]
                 return json_response
     
     except Exception as e:
         logging.error(e)
         return {
-            "node_name": node_mapping[url][0],
-            "private_ip": node_mapping[url][1],
+            "node_name": node_mapping[url],
             "utilization": {
                 "cpu": -1,
                 "memory": -1,
@@ -63,4 +62,4 @@ loop = asyncio.get_event_loop()
 
 def get_all_nodes_health():
     node_ips = ["10.0.3.10", "10.0.4.10", "10.0.5.10", "10.0.3.11", "10.0.3.80", "10.0.4.80", "10.0.1.11", "10.0.1.10", "10.0.3.100", "10.0.4.100", "10.0.3.120", "10.0.4.120", "10.0.1.45", "10.0.1.46"]
-    return loop.run_until_complete(asyncio.gather(*[async_fetch(f"http://{node_ip}:8020/health", node_ip) for node_ip in node_ips]))
+    return loop.run_until_complete(asyncio.gather(*[async_fetch(f"http://{node_ip}:8020/health") for node_ip in node_ips]))

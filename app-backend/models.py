@@ -1,15 +1,15 @@
 from sqlalchemy import func
 from db import db
 
-class Student(db.Model):
+class Post(db.Model):
+    __tablename__ = "posts"
     id = db.Column(db.Integer, primary_key=True)
-    firstname = db.Column(db.String(100), nullable=False)
-    lastname = db.Column(db.String(100), nullable=False)
-    email = db.Column(db.String(80), unique=True, nullable=False)
-    age = db.Column(db.Integer)
-    created_at = db.Column(db.DateTime(timezone=True),
-                           server_default=func.now())
-    bio = db.Column(db.Text)
+    created_by = db.Column(db.String(100), nullable=False)
+    content = db.Column(db.TEXT, nullable=False)
+    title = db.Column(db.String(1000), nullable=False)
 
     def __repr__(self):
-        return f'<Student {self.firstname}>'
+        return f"Post: {self.title}"
+    
+    def to_json(self):
+        return dict(id=self.id, created_by=self.created_by, content=self.content, title=self.title)

@@ -4,7 +4,6 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-flask = "*"
 psutil = "*"
 flask-sqlalchemy = "*"
 gevent = "*"
@@ -12,6 +11,9 @@ pymysql = "*"
 flask-cors = "*"
 aiohttp = "*"
 requests = "*"
+python-dotenv = "*"
+flask = "*"
+flask-migrate = "*"
 
 [dev-packages]
 

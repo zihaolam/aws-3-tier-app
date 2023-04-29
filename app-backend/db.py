@@ -1,16 +1,11 @@
-from flask import Flask
+from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
-from app import app
 
-def setup(app: Flask):
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://sbuser:sbpass@10.0.3.11:6033/sbtest'
-    return SQLAlchemy(app)
-
-
-db = setup(app)
+db = SQLAlchemy()
 
 if __name__ == "__main__":
+    from app import app
     with app.app_context():
         try:
             # db.session.execute('SELECT 1')
