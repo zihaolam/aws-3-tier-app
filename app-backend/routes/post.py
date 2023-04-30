@@ -5,16 +5,18 @@ post_blueprint = Blueprint('post_route', __name__,url_prefix="/post")
 
 @post_blueprint.route('/<post_id>', methods=["GET"])
 def post_blueprint_read_one_handler(post_id: int):
-    return post.find(post_id)
+    _post =  post.find_one(post_id)
+    return _post._asdict()
 
 @post_blueprint.route("/", methods=["GET"])
 def post_blueprinter_read_all_handler():
-    return post.find()
+    _posts = post.find_all()
+    return [_post._asdict() for _post in _posts]
 
 @post_blueprint.route("/", methods=["POST"])
 def post_blueprinter_create_handler():
     new_post = post.create(request.json)
-    return new_post.to_json()
+    return new_post._asdict()
 
 
 @post_blueprint.route("/<post_id>", methods=["PUT"])

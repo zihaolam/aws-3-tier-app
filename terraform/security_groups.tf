@@ -120,6 +120,13 @@ resource "aws_security_group" "db_load_balancer_sg" {
   }
 
   ingress {
+    from_port       = 6032
+    to_port         = 6032
+    protocol        = "tcp"
+    security_groups = [aws_security_group.app_server_sg.id]
+  }
+
+  ingress {
     from_port       = 6033
     to_port         = 6033
     protocol        = "tcp"
@@ -267,7 +274,7 @@ resource "aws_security_group" "nat_gateway_instance_sg" {
 }
 
 locals {
-  security_group_ids = [aws_security_group.app_load_balancer_sg.id, aws_security_group.web_load_balancer_sg.id, aws_security_group.db_server_sg.id, aws_security_group.db_load_balancer_sg.id, aws_security_group.web_server_sg.id, aws_security_group.file_server_sg.id, aws_security_group.bastion_host_sg.id, aws_security_group.nat_gateway_instance_sg.id]
+  security_group_ids = [aws_security_group.app_load_balancer_sg.id, aws_security_group.web_load_balancer_sg.id, aws_security_group.db_server_sg.id, aws_security_group.db_load_balancer_sg.id, aws_security_group.web_server_sg.id, aws_security_group.file_server_sg.id, aws_security_group.db_server_sg.id, aws_security_group.bastion_host_sg.id, aws_security_group.nat_gateway_instance_sg.id]
 }
 
 resource "aws_security_group_rule" "allow_healthcheck_instance_access" {

@@ -96,13 +96,14 @@ resource "aws_instance" "app_server" {
 
 resource "aws_instance" "web_load_balancer" {
   ami             = var.ubuntu_ami
-  subnet_id       = element(aws_subnet.public_subnet.*.id, 0)
+  count           = 2
+  subnet_id       = element(aws_subnet.public_subnet.*.id, count.index)
   instance_type   = "t3.medium"
-  private_ip      = var.webserverlb_private_ip
+  private_ip      = element(var.webserverlb_private_ips, count.index)
   key_name        = var.general_key_pair
   security_groups = [aws_security_group.web_load_balancer_sg.id]
   tags = {
-    Name = "web_load_balancer"
+    Name = "web_load_balancer-${count.index}"
   }
 
 
@@ -115,13 +116,14 @@ resource "aws_instance" "web_load_balancer" {
 
 resource "aws_instance" "app_load_balancer" {
   ami             = var.ubuntu_ami
-  subnet_id       = element(aws_subnet.public_subnet.*.id, 0)
+  count           = 2
+  subnet_id       = element(aws_subnet.public_subnet.*.id, count.index)
   instance_type   = "t3.medium"
   key_name        = var.general_key_pair
-  private_ip      = var.appserverlb_private_ip
+  private_ip      = element(var.appserverlb_private_ips, count.index)
   security_groups = [aws_security_group.app_load_balancer_sg.id]
   tags = {
-    Name = "app_load_balancer"
+    Name = "app_load_balancer-${count.index}"
   }
 
   user_data = base64encode(templatefile("./user_data/healthcheck_server.tftpl", {

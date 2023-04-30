@@ -58,12 +58,12 @@ variable "webservers_private_ip" {
   default = ["10.0.3.80", "10.0.4.80"]
 }
 
-variable "webserverlb_private_ip" {
-  default = "10.0.1.11"
+variable "webserverlb_private_ips" {
+  default = ["10.0.1.11", "10.0.2.11"]
 }
 
-variable "appserverlb_private_ip" {
-  default = "10.0.1.10"
+variable "appserverlb_private_ips" {
+  default = ["10.0.1.10", "10.0.2.10"]
 }
 
 variable "appservers_private_ip" {

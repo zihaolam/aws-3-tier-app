@@ -1,8 +1,10 @@
 # docker-compose.yml
-version: '3.7'
+version: "3.7"
 services:
-  app-backend:
-    container_name: app-backend
-    build: .
-    network_mode: "host"
-    restart: always
+    app-backend:
+        container_name: app-backend
+        build: .
+        network_mode: "host"
+        restart: always
+        environment:
+            - INSTANCE_NAME=${INSTANCE_NAME}

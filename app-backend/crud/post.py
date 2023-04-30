@@ -1,31 +1,40 @@
 from typing import List, Optional, Union
 from models import Post
-from flask import abort
+from sqlalchemy import select, text, Row, CursorResult
+from sqlalchemy.orm import Session
+from flask import abort, jsonify
 from db import db
 
-def create(user: dict) -> Post:
-    new_post = Post(**user)
+
+IP_ADDRESS_STMT = "(Select SUBSTRING_INDEX(host,':',1) as 'ip' From information_schema.processlist WHERE ID=connection_id()) ip_records"
+def get_posts_stmt(where: Optional[str] = None):
+    return f"select * from posts join {IP_ADDRESS_STMT} {'' if where is None else 'where ' + where};"
+
+
+
+def update(post_id: int, updated_post: Row) -> Post:
+    Post.query.filter_by(id=post_id).update(updated_post)
+    db.session.commit()
+
+    return Post.query.filter_by(id=post_id).first()
+
+def find_all() -> CursorResult:
+    res = db.session.execute(text(get_posts_stmt()))
+    return res
+
+def find_one(post_id: int) -> Row:
+    res = db.session.execute(text(get_posts_stmt(f"posts.id = {post_id}"))).fetchone()
+    if res is None:
+        return abort(code=422)
+            
+    return res
+
+def create(post: Row) -> Row:
+    new_post = Post(**post)
     db.session.add(new_post)
     db.session.commit()
-    return new_post
-
-
-def update(user_id: int, updated_post: dict) -> Post:
-    Post.query.filter_by(id=user_id).update(updated_post)
-    db.session.commit()
-
-    return Post.query.filter_by(id=user_id).first()
-
-def find(user_id: Optional[int] = None) -> Union[dict, List[dict]]:
-    if user_id is not None:
-        user_found: Post = Post.query.filter_by(id=user_id).first()
-        if user_found is None:
-            return abort(code=422)
-                
-        return user_found.to_json()
-    
-    _posts: List[Post] = Post.query.all()
-    return [_post.to_json() for _post in _posts]
+    db.session.flush(new_post)
+    return find_one(post_id=new_post.id)
 
 
 def delete(post_id: int):
@@ -35,4 +44,3 @@ def delete(post_id: int):
     
     db.session.delete(post_to_delete)
     db.session.commit()
-    
