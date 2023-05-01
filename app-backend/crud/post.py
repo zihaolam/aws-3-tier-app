@@ -6,17 +6,17 @@ from flask import abort, jsonify
 from db import db
 
 
-IP_ADDRESS_STMT = "(Select SUBSTRING_INDEX(host,':',1) as 'ip' From information_schema.processlist WHERE ID=connection_id()) ip_records"
+IP_ADDRESS_STMT = "(select @@hostname) ip_records"
 def get_posts_stmt(where: Optional[str] = None):
     return f"select * from posts join {IP_ADDRESS_STMT} {'' if where is None else 'where ' + where};"
 
 
 
-def update(post_id: int, updated_post: Row) -> Post:
+def update(post_id: int, updated_post: Row) -> Row:
     Post.query.filter_by(id=post_id).update(updated_post)
     db.session.commit()
 
-    return Post.query.filter_by(id=post_id).first()
+    return find_one(post_id=post_id)
 
 def find_all() -> CursorResult:
     res = db.session.execute(text(get_posts_stmt()))
