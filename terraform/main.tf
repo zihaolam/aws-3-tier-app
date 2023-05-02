@@ -103,13 +103,13 @@ resource "aws_instance" "web_load_balancer" {
   key_name        = var.general_key_pair
   security_groups = [aws_security_group.web_load_balancer_sg.id]
   tags = {
-    Name = "web_load_balancer-${count.index}"
+    Name = "web_load_balancer-${count.index + 1}"
   }
 
 
   user_data = base64encode(templatefile("./user_data/healthcheck_server.tftpl", {
     prepend_user_data = "",
-    name              = "web_load_balancer-${count.index}"
+    name              = "web_load_balancer-${count.index + 1}"
     append_user_data  = templatefile("./user_data/weblb.sh", {})
   }))
 }
@@ -123,12 +123,12 @@ resource "aws_instance" "app_load_balancer" {
   private_ip      = element(var.appserverlb_private_ips, count.index)
   security_groups = [aws_security_group.app_load_balancer_sg.id]
   tags = {
-    Name = "app_load_balancer-${count.index}"
+    Name = "app_load_balancer-${count.index + 1}"
   }
 
   user_data = base64encode(templatefile("./user_data/healthcheck_server.tftpl", {
     prepend_user_data = "",
-    name              = "app_load_balancer-${count.index}",
+    name              = "app_load_balancer-${count.index + 1}",
     append_user_data  = templatefile("./user_data/applb.sh", {})
   }))
 }

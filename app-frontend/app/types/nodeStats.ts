@@ -36,3 +36,12 @@ export interface NodeStat {
 }
 
 export type GroupedNodeStat = [NodeGroup, NodeStat[]][];
+
+export interface BenchmarkResults {
+	timeStarted: number;
+	timeEnded: number;
+	numberOfExecutions: number;
+	timeTakenInMS: number;
+	apiServedBy: "10.0.3.100" | "10.0.4.100";
+	dbServedBy: "ip-10-0-3-10" | "ip-10-0-4-10" | "ip-10-0-5-10";
+}

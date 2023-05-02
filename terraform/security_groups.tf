@@ -42,6 +42,12 @@ resource "aws_security_group" "app_load_balancer_sg" {
     security_groups = [aws_security_group.bastion_host_sg.id]
   }
 
+  ingress {
+    from_port   = 8020
+    to_port     = 8020
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
 
   egress {
     from_port   = 0
@@ -67,7 +73,12 @@ resource "aws_security_group" "web_load_balancer_sg" {
     security_groups = [aws_security_group.bastion_host_sg.id]
   }
 
-
+  ingress {
+    from_port   = 8020
+    to_port     = 8020
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
   egress {
     from_port   = 0
     to_port     = 0
@@ -100,7 +111,12 @@ resource "aws_security_group" "db_server_sg" {
     security_groups = [aws_security_group.bastion_host_sg.id]
   }
 
-
+  ingress {
+    from_port   = 8020
+    to_port     = 8020
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
   egress {
     from_port   = 0
     to_port     = 0
@@ -133,7 +149,12 @@ resource "aws_security_group" "db_load_balancer_sg" {
     security_groups = [aws_security_group.app_server_sg.id]
   }
 
-
+  ingress {
+    from_port   = 8020
+    to_port     = 8020
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
   egress {
     from_port   = 0
     to_port     = 0
@@ -158,6 +179,12 @@ resource "aws_security_group" "web_server_sg" {
     security_groups = [aws_security_group.bastion_host_sg.id]
   }
 
+  ingress {
+    from_port   = 8020
+    to_port     = 8020
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
 
   egress {
     from_port   = 0
@@ -223,6 +250,13 @@ resource "aws_security_group" "file_server_sg" {
     security_groups = [aws_security_group.bastion_host_sg.id]
   }
 
+  ingress {
+    from_port   = 8020
+    to_port     = 8020
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -240,6 +274,12 @@ resource "aws_security_group" "bastion_host_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  ingress {
+    from_port   = 8020
+    to_port     = 8020
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
 
   egress {
     from_port   = 0
@@ -258,31 +298,24 @@ resource "aws_security_group" "nat_gateway_instance_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-
   ingress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["10.0.0.0/16"]
   }
+
+  ingress {
+    from_port   = 8020
+    to_port     = 8020
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
-}
-
-locals {
-  security_group_ids = [aws_security_group.app_load_balancer_sg.id, aws_security_group.web_load_balancer_sg.id, aws_security_group.db_load_balancer_sg.id, aws_security_group.web_server_sg.id, aws_security_group.file_server_sg.id, aws_security_group.db_server_sg.id, aws_security_group.bastion_host_sg.id, aws_security_group.nat_gateway_instance_sg.id]
-}
-
-resource "aws_security_group_rule" "allow_healthcheck_instance_access" {
-  for_each                 = toset(local.security_group_ids)
-  type                     = "ingress"
-  from_port                = 8020
-  to_port                  = 8020
-  protocol                 = "tcp"
-  security_group_id        = each.value
-  source_security_group_id = aws_security_group.app_server_sg.id
 }
