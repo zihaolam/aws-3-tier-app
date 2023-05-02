@@ -4,7 +4,7 @@ import { useQuery } from "react-query";
 import { GroupedNodeStat, NodeStat, ServerStats } from "~/types/nodeStats";
 
 const useQueryNodeHealth = () => {
-	const query = useQuery(["node-health"], () => axios.get<NodeStat[]>("http://15.220.241.48/all-health").then((res) => res.data), {
+	const query = useQuery(["node-health"], () => axios.get<NodeStat[]>("http://15.220.241.25/all-health").then((res) => res.data), {
 		refetchInterval: 1000,
 	});
 	const defaultServerStats: ServerStats = {
