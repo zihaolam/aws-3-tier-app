@@ -13,6 +13,7 @@ INSERT INTO mysql_servers(hostgroup_id, hostname, port) VALUES (1,'10.0.4.10',33
 INSERT INTO mysql_servers(hostgroup_id, hostname, port) VALUES (2,'10.0.5.10',3306);
 
 INSERT INTO mysql_query_rules (active, match_digest, destination_hostgroup, apply) VALUES (1, '^SELECT.*', 1, 0);
+INSERT INTO mysql_query_rules (active, match_digest, destination_hostgroup, apply) VALUES (1, '^SELECT.*', 2, 0);
 INSERT INTO mysql_query_rules (active, match_digest, destination_hostgroup, apply) VALUES (1, '^SELECT.*FOR UPDATE', 0, 1);
 
 UPDATE global_variables SET variable_value='proxysql'

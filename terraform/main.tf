@@ -109,7 +109,7 @@ resource "aws_instance" "web_load_balancer" {
 
   user_data = base64encode(templatefile("./user_data/healthcheck_server.tftpl", {
     prepend_user_data = "",
-    name              = "web_load_balancer"
+    name              = "web_load_balancer-${count.index}"
     append_user_data  = templatefile("./user_data/weblb.sh", {})
   }))
 }
@@ -128,7 +128,7 @@ resource "aws_instance" "app_load_balancer" {
 
   user_data = base64encode(templatefile("./user_data/healthcheck_server.tftpl", {
     prepend_user_data = "",
-    name              = "app_load_balancer",
+    name              = "app_load_balancer-${count.index}",
     append_user_data  = templatefile("./user_data/applb.sh", {})
   }))
 }
