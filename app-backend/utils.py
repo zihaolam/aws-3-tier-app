@@ -41,7 +41,7 @@ node_mapping = {}
 
 async def async_fetch(url):
     try:
-        async with aiohttp.ClientSession() as session, async_timeout.timeout(2):
+        async with aiohttp.ClientSession() as session, async_timeout.timeout(0.15):
             async with session.get(url) as response:
                 json_response = await response.json()
                 node_mapping[url] = json_response["node_name"]
