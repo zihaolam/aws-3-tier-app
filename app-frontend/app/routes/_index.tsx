@@ -49,7 +49,7 @@ export default function Index() {
 	const [isModalOpen, setModalOpen] = useState<boolean>(false);
 	const { register, handleSubmit } = useForm({ defaultValues });
 	const { mutate: createPost } = useMutation(
-		(data: CreatePostFormValues) => axios.post<Post>("http://15.220.241.173/post/", data).then((res) => res.data),
+		(data: CreatePostFormValues) => axios.post<Post>("http://15.220.241.25/post/", data).then((res) => res.data),
 		{ onSuccess: () => setModalOpen(false) }
 	);
 	const onSubmit = handleSubmit((data) => createPost(data));
