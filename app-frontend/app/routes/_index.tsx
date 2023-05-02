@@ -45,12 +45,17 @@ const Loading: FC = () => {
 };
 
 export default function Index() {
-	const { data, isLoading } = useQueryPosts();
+	const { data, isLoading, refetch: refetchPosts } = useQueryPosts();
 	const [isModalOpen, setModalOpen] = useState<boolean>(false);
 	const { register, handleSubmit } = useForm({ defaultValues });
 	const { mutate: createPost } = useMutation(
 		(data: CreatePostFormValues) => axios.post<Post>("http://15.220.241.25/post/", data).then((res) => res.data),
-		{ onSuccess: () => setModalOpen(false) }
+		{
+			onSuccess: () => {
+				setModalOpen(false);
+				refetchPosts();
+			},
+		}
 	);
 	const onSubmit = handleSubmit((data) => createPost(data));
 
