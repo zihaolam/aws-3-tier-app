@@ -61,9 +61,9 @@
 
 ## About The Project
 
-[![Architecture diagram][product-screenshot]](https://raw.githubusercontent.com/zihaolam/aws-3-tier-app/main/localzone-ha-3t-app.jpeg)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+<div style="display: flex; justify-content: center; margin-bottom: 10px;">
+<img src="https://raw.githubusercontent.com/zihaolam/aws-3-tier-app/main/localzone-ha-3t-app.jpeg" />
+</div>
 
 ### Built With
 
@@ -73,8 +73,6 @@
 -   HAProxy
 -   ProxySQL
 -   Terraform
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- GETTING STARTED -->
 
