@@ -38,7 +38,7 @@
 </div>
 
 <!-- TABLE OF CONTENTS -->
-<details>
+<!-- <details>
   <summary>Table of Contents</summary>
   <ol>
     <li>
@@ -55,13 +55,13 @@
       </ul>
     </li>
   </ol>
-</details>
+</details> -->
 
 <!-- ABOUT THE PROJECT -->
 
 ## About The Project
 
-[![Architecture diagram][product-screenshot]](./localzone-ha-3t-app.jpeg)
+[![Architecture diagram][product-screenshot]](https://raw.githubusercontent.com/zihaolam/aws-3-tier-app/main/localzone-ha-3t-app.jpeg)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
